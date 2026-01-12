@@ -5,6 +5,6 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/test-utils',
     '@nuxt/eslint',
-    '@nuxtjs/tailwindcss'
-  ]
+    '@nuxtjs/tailwindcss',
+  ],
 })
