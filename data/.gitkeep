@@ -1,0 +1,5 @@
+# Database Storage
+
+SQLite database file location: `./data/tasks.sqlite`
+
+This file is created automatically when migrations are run.

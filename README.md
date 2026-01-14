@@ -73,8 +73,6 @@ pnpm preview
 
 ## API Documentation
 
-API contract available at: `specs/001-tasks-app/contracts/openapi.yaml`
-
 ### Endpoints
 
 - `GET /api/tasks` - List tasks (with pagination, filtering, sorting, search)
@@ -105,10 +103,7 @@ app/              # Frontend application
 server/           # Backend API
 ├── api/          # API routes
 ├── db/           # Database schema and migrations
-└── domain/       # Business logic and repositories
-
-specs/            # Feature specifications
-└── 001-tasks-app/
+└── tasks/        # Business logic and repositories (simple grouped by feature)
 
 test/             # Test files
 ├── unit/         # Unit tests
