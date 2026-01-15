@@ -103,7 +103,7 @@ app/              # Frontend application
 server/           # Backend API
 ├── api/          # API routes
 ├── db/           # Database schema and migrations
-└── tasks/        # Business logic and repositories (simple grouped by feature)
+└── domain/task   # Business logic and repositories (simple grouped by feature)
 
 test/             # Test files
 ├── unit/         # Unit tests

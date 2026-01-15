@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm'
 import { db } from '../../db/client'
 import { tasks } from '../../db/schema'
-import type { Task, TaskInsert, TaskCreate, TaskUpdate } from './task'
+import type { Task, TaskInsert, TaskCreate, TaskUpdate } from '#shared/types/task.type'
 
 export async function createTask(data: TaskCreate): Promise<Task> {
   const now = new Date()
@@ -39,7 +39,7 @@ export async function updateTask(id: string, data: TaskUpdate): Promise<Task | u
     })
     .where(eq(tasks.id, id))
     .returning()
-  
+
   return result[0]
 }
 
@@ -50,7 +50,7 @@ export async function patchTaskStatus(id: string, status: Task['status']): Promi
     .set({ status, updatedAt: now })
     .where(eq(tasks.id, id))
     .returning()
-  
+
   return result[0]
 }
 

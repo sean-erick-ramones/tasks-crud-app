@@ -1,7 +1,7 @@
 import { SQL, sql, eq, and, or, like, asc, desc } from 'drizzle-orm'
 import { db } from '../../db/client'
 import { tasks } from '../../db/schema'
-import type { Task, ListQuery, TaskListResponse } from './task'
+import type { Task, ListQuery, TaskListResponse } from '#shared/types/task.type'
 
 export async function listTasks(query: ListQuery): Promise<TaskListResponse> {
   const { page, pageSize, status, priority, q, sortBy, sortDir } = query
