@@ -3,7 +3,7 @@ import { createTask, getTaskById } from '../../server/domain/task/task.repositor
 import Database from 'better-sqlite3'
 import { drizzle } from 'drizzle-orm/better-sqlite3'
 import { tasks } from '../../server/db/schema.ts'
-import type { TaskCreate } from '#shared/types/task.type'
+import type { TaskCreate } from '../../shared/types/task.type'
 
 describe('taskRepo - create and read', () => {
     let testDb: any
