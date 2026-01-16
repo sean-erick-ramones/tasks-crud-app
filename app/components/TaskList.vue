@@ -8,6 +8,8 @@ defineProps<{
 
 const emit = defineEmits<{
   statusChange: [id: string, status: string]
+  edit: [task: Task]
+  delete: [id: string]
 }>()
 
 const getStatusColor = (status: string) => {
@@ -87,7 +89,7 @@ const handleStatusChange = (taskId: string, newStatus: string) => {
             </div>
           </div>
 
-          <div class="ml-4">
+          <div class="ml-4 flex items-start gap-2">
             <label :for="`status-${task.id}`" class="sr-only">Change status</label>
             <select
               :id="`status-${task.id}`"
@@ -99,6 +101,20 @@ const handleStatusChange = (taskId: string, newStatus: string) => {
               <option value="in-progress">In Progress</option>
               <option value="completed">Completed</option>
             </select>
+            <button
+              type="button"
+              class="px-3 py-1 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-md transition-colors"
+              @click="emit('edit', task)"
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              class="px-3 py-1 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors"
+              @click="emit('delete', task.id)"
+            >
+              Delete
+            </button>
           </div>
         </div>
       </div>
