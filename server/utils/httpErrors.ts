@@ -34,11 +34,11 @@ export function handleError(error: unknown): H3Error {
   if (error instanceof ZodError) {
     return handleZodError(error)
   }
-  
+
   if (error instanceof H3Error) {
     return error
   }
-  
+
   console.error('Unexpected error:', error)
   return internalError()
 }

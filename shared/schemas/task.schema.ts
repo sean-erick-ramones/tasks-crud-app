@@ -16,7 +16,7 @@ export const insertTaskSchema = createInsertSchema(tasks, {
   description: (schema) => schema.max(500, 'Description must be 500 characters or less').nullable().optional(),
   status: () => TaskStatusSchema.optional(),
   priority: () => TaskPrioritySchema.optional(),
-  dueDate: (schema) => schema.nullable().optional()
+  dueDate: () => z.coerce.date().nullable().optional()
 })
 
 // API request schemas

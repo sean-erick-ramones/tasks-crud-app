@@ -7,15 +7,9 @@ export default defineEventHandler(async (event) => {
   try {
     const body = await readBody<TaskCreate>(event)
 
-    const convertedDueDate: Date | null = body.dueDate ? new Date(body.dueDate) : null
+    const data: TaskCreate = createTaskSchema.parse(body)
 
-    const validated = createTaskSchema.safeParse({...body, dueDate: convertedDueDate})
-
-    if (!validated.success) {
-      throw handleError(validated.error)
-    }
-
-    const task = await createTask(validated.data)
+    const task: TaskCreate = await createTask(data)
 
     setResponseStatus(event, 201)
     return task

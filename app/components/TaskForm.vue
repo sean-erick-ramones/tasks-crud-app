@@ -23,7 +23,7 @@ const handleSubmit = () => {
   // Validate data
   const validation = createTaskSchema.safeParse(taskData)
   if (!validation.success) {
-    console.error('Validation errors:', validation.error.format())
+    console.error('Validation errors:', (validation.error))
     return
   }
 
