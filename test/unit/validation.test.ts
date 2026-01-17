@@ -42,7 +42,7 @@ describe('validation helpers', () => {
 
         it('should reject invalid UUID format', () => {
             expect(isValidUUID('not-a-uuid')).toBe(false)
-            expect(isValidUUID('123e4567-e89b-12d3-a456-426614174000')).toBe(false) // wrong version
+            expect(isValidUUID('123e4567-89b-12d3-456-424174000')).toBe(false) // wrong version
             expect(isValidUUID('')).toBe(false)
         })
 

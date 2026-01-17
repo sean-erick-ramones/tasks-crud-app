@@ -46,8 +46,8 @@ describe('taskRepo - update fields', () => {
       const created = await createTask(taskData)
       const originalUpdatedAt = created.updatedAt
 
-      // Wait a bit to ensure updatedAt changes
-      await new Promise(resolve => setTimeout(resolve, 10))
+      // Wait to ensure updatedAt changes (SQLite timestamp resolution)
+      await new Promise(resolve => setTimeout(resolve, 1100))
 
       // Update task
       const updateData: TaskUpdate = {
@@ -120,7 +120,7 @@ describe('taskRepo - update fields', () => {
       const created = await createTask(taskData)
       const originalUpdatedAt = created.updatedAt
 
-      await new Promise(resolve => setTimeout(resolve, 10))
+      await new Promise(resolve => setTimeout(resolve, 1100))
 
       const updateData: TaskUpdate = {
         title: 'Updated Task',
