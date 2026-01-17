@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Task } from '#shared/types/task.type';
+import type { Task, TaskStatus } from '#shared/types/task.type';
 
 defineProps<{
   tasks: Task[];
@@ -7,12 +7,12 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-  statusChange: [id: string, status: string];
+  statusChange: [id: string, status: TaskStatus];
   edit: [task: Task];
   delete: [id: string];
 }>();
 
-const getStatusColor = (status: string) => {
+const getStatusColor = (status: TaskStatus) => {
   switch (status) {
     case 'completed':
       return 'bg-green-100 text-green-800';
@@ -23,7 +23,7 @@ const getStatusColor = (status: string) => {
   }
 };
 
-const getPriorityColor = (priority: string) => {
+const getPriorityColor = (priority: TaskPriority) => {
   switch (priority) {
     case 'high':
       return 'bg-red-100 text-red-800';
@@ -43,7 +43,7 @@ const formatDate = (date: Date | null) => {
   });
 };
 
-const handleStatusChange = (taskId: string, newStatus: string) => {
+const handleStatusChange = (taskId: string, newStatus: TaskStatus) => {
   emit('statusChange', taskId, newStatus);
 };
 </script>
@@ -112,7 +112,7 @@ const handleStatusChange = (taskId: string, newStatus: string) => {
               :id="`status-${task.id}`"
               :value="task.status"
               class="px-3 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              @change="handleStatusChange(task.id, ($event.target as HTMLSelectElement).value)"
+              @change="handleStatusChange(task.id, ($event.target as HTMLSelectElement).value as TaskStatus)"
             >
               <option value="pending">Pending</option>
               <option value="in-progress">In Progress</option>

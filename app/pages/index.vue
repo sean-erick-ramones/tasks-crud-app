@@ -9,10 +9,11 @@ import type {
   SortDir,
   ListQuery,
 } from '#shared/types/task.type';
+import ToastHost from '~/components/ToastHost.vue';
 
 const { fetchTasks, createTask, updateTask, updateTaskStatus, deleteTask } = useTasksApi();
 
-const tasks = ref<any[]>([]);
+const tasks = ref<Task[]>([]);
 const meta = ref({
   page: 1,
   pageSize: 10,
@@ -20,11 +21,12 @@ const meta = ref({
   totalPages: 0,
 });
 const loading = ref(false);
-const error = ref<string | null>(null);
-const successMessage = ref<string | null>(null);
 const editingTask = ref<Task | null>(null);
 const isEditDialogOpen = ref(false);
 const taskToDelete = ref<string | null>(null);
+
+// Toast notifications
+const toastHost = ref<InstanceType<typeof ToastHost> | null>(null);
 
 // Query parameters
 const searchQuery = ref('');
@@ -37,7 +39,6 @@ const pageSize = ref(10);
 
 const loadTasks = async () => {
   loading.value = true;
-  error.value = null;
   try {
     const params: Partial<ListQuery> = {
       page: currentPage.value,
@@ -62,34 +63,29 @@ const loadTasks = async () => {
     tasks.value = response.data;
     meta.value = response.meta;
   } catch (e: any) {
-    error.value = e.data?.message || 'Failed to load tasks';
+    toastHost.value?.addToast(e.data?.message || 'Failed to load tasks', 'error');
   } finally {
     loading.value = false;
   }
 };
 
 const handleCreateTask = async (taskData: TaskCreate) => {
-  error.value = null;
-  successMessage.value = null;
   try {
     await createTask(taskData);
-    successMessage.value = 'Task created successfully!';
-    setTimeout(() => {
-      successMessage.value = null;
-    }, 3000);
+    toastHost.value?.addToast('Task created successfully!', 'success');
     await loadTasks();
   } catch (e: any) {
-    error.value = e.data?.message || 'Failed to create task';
+    toastHost.value?.addToast(e.data?.message || 'Failed to create task', 'error');
   }
 };
 
-const handleStatusChange = async (id: string, status: string) => {
-  error.value = null;
+const handleStatusChange = async (id: string, status: TaskStatus) => {
   try {
     await updateTaskStatus(id, status);
+    toastHost.value?.addToast('Status updated successfully!', 'success');
     await loadTasks();
   } catch (e: any) {
-    error.value = e.data?.message || 'Failed to update task status';
+    toastHost.value?.addToast(e.data?.message || 'Failed to update task status', 'error');
   }
 };
 
@@ -99,19 +95,15 @@ const handleEditTask = (task: Task) => {
 };
 
 const handleUpdateTask = async (id: string, taskData: TaskUpdate) => {
-  error.value = null;
-  successMessage.value = null;
   try {
     await updateTask(id, taskData);
-    successMessage.value = 'Task updated successfully!';
-    setTimeout(() => {
-      successMessage.value = null;
-    }, 3000);
+    toastHost.value?.addToast('Task updated successfully!', 'success');
     isEditDialogOpen.value = false;
     editingTask.value = null;
     await loadTasks();
   } catch (e: any) {
-    error.value = e.data?.message || 'Failed to update task';
+    if (!toastHost.value) return;
+    toastHost.value.addToast(e.data?.message || 'Failed to update task', 'error');
   }
 };
 
@@ -122,18 +114,13 @@ const handleDeleteRequest = (id: string) => {
 const confirmDelete = async () => {
   if (!taskToDelete.value) return;
 
-  error.value = null;
-  successMessage.value = null;
   try {
     await deleteTask(taskToDelete.value);
-    successMessage.value = 'Task deleted successfully!';
-    setTimeout(() => {
-      successMessage.value = null;
-    }, 3000);
+    toastHost.value?.addToast('Task deleted successfully!', 'success');
     taskToDelete.value = null;
     await loadTasks();
   } catch (e: any) {
-    error.value = e.data?.message || 'Failed to delete task';
+    toastHost.value?.addToast(e.data?.message || 'Failed to delete task', 'error');
     taskToDelete.value = null;
   }
 };
@@ -177,19 +164,8 @@ onMounted(() => {
 
 <template>
   <div class="space-y-6">
-    <div
-      v-if="error"
-      class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg"
-    >
-      {{ error }}
-    </div>
-
-    <div
-      v-if="successMessage"
-      class="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg"
-    >
-      {{ successMessage }}
-    </div>
+    <!-- Toast Host -->
+    <ToastHost ref="toastHost" />
 
     <TaskForm @submit="handleCreateTask" />
 
