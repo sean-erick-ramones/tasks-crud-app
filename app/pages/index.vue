@@ -62,7 +62,7 @@ const loadTasks = async () => {
     const response = await fetchTasks(params);
     tasks.value = response.data;
     meta.value = response.meta;
-  } catch (e: any) {
+  } catch (e: unknown) {
     toastHost.value?.addToast(e.data?.message || 'Failed to load tasks', 'error');
   } finally {
     loading.value = false;
@@ -74,8 +74,9 @@ const handleCreateTask = async (taskData: TaskCreate) => {
     await createTask(taskData);
     toastHost.value?.addToast('Task created successfully!', 'success');
     await loadTasks();
-  } catch (e: any) {
-    toastHost.value?.addToast(e.data?.message || 'Failed to create task', 'error');
+  } catch (e: unknown) {
+    const error = e as { data?: { message?: string } };
+    toastHost.value?.addToast(error.data?.message || 'Failed to create task', 'error');
   }
 };
 
@@ -84,8 +85,9 @@ const handleStatusChange = async (id: string, status: TaskStatus) => {
     await updateTaskStatus(id, status);
     toastHost.value?.addToast('Status updated successfully!', 'success');
     await loadTasks();
-  } catch (e: any) {
-    toastHost.value?.addToast(e.data?.message || 'Failed to update task status', 'error');
+  } catch (e: unknown) {
+    const error = e as { data?: { message?: string } };
+    toastHost.value?.addToast(error.data?.message || 'Failed to update task status', 'error');
   }
 };
 
@@ -101,9 +103,10 @@ const handleUpdateTask = async (id: string, taskData: TaskUpdate) => {
     isEditDialogOpen.value = false;
     editingTask.value = null;
     await loadTasks();
-  } catch (e: any) {
+  } catch (e: unknown) {
     if (!toastHost.value) return;
-    toastHost.value.addToast(e.data?.message || 'Failed to update task', 'error');
+    const error = e as { data?: { message?: string } };
+    toastHost.value.addToast(error.data?.message || 'Failed to update task', 'error');
   }
 };
 
@@ -119,8 +122,9 @@ const confirmDelete = async () => {
     toastHost.value?.addToast('Task deleted successfully!', 'success');
     taskToDelete.value = null;
     await loadTasks();
-  } catch (e: any) {
-    toastHost.value?.addToast(e.data?.message || 'Failed to delete task', 'error');
+  } catch (e: unknown) {
+    const error = e as { data?: { message?: string } };
+    toastHost.value?.addToast(error.data?.message || 'Failed to delete task', 'error');
     taskToDelete.value = null;
   }
 };
