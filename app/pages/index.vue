@@ -63,7 +63,8 @@ const loadTasks = async () => {
     tasks.value = response.data;
     meta.value = response.meta;
   } catch (e: unknown) {
-    toastHost.value?.addToast(e.data?.message || 'Failed to load tasks', 'error');
+    const error = e as { data?: { message?: string } };
+    toastHost.value?.addToast(error.data?.message || 'Failed to update task status', 'error');
   } finally {
     loading.value = false;
   }
