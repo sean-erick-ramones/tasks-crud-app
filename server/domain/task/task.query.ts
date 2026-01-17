@@ -6,7 +6,6 @@ import type { Task, ListQuery, TaskListResponse } from '#shared/types/task.type'
 export async function listTasks(query: ListQuery): Promise<TaskListResponse> {
   const { page, pageSize, status, priority, q, sortBy, sortDir } = query
 
-  // Build WHERE conditions
   const conditions: SQL[] = []
 
   if (status) {
@@ -26,7 +25,7 @@ export async function listTasks(query: ListQuery): Promise<TaskListResponse> {
       )!
     )
   }
-
+  // Build where clause based on query parameters
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined
 
   // Get total count

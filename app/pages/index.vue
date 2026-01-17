@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import type { TaskCreate, TaskUpdate, Task } from '#shared/types/task.type'
+import type { TaskCreate, TaskUpdate, Task, TaskStatus, TaskPriority, SortBy, SortDir, ListQuery } from '#shared/types/task.type'
 
 const { fetchTasks, createTask, updateTask, updateTaskStatus, deleteTask } = useTasksApi()
 
 const tasks = ref<any[]>([])
+const meta = ref({
+  page: 1,
+  pageSize: 10,
+  total: 0,
+  totalPages: 0
+})
 const loading = ref(false)
 const error = ref<string | null>(null)
 const successMessage = ref<string | null>(null)
@@ -11,12 +17,41 @@ const editingTask = ref<Task | null>(null)
 const isEditDialogOpen = ref(false)
 const taskToDelete = ref<string | null>(null)
 
+// Query parameters
+const searchQuery = ref('')
+const statusFilter = ref<TaskStatus | undefined>(undefined)
+const priorityFilter = ref<TaskPriority | undefined>(undefined)
+const sortBy = ref<SortBy>('createdAt')
+const sortDir = ref<SortDir>('desc')
+const currentPage = ref(1)
+const pageSize = ref(10)
+
 const loadTasks = async () => {
   loading.value = true
   error.value = null
   try {
-    const response = await fetchTasks()
+    const params: Partial<ListQuery> = {
+      page: currentPage.value,
+      pageSize: pageSize.value,
+      sortBy: sortBy.value,
+      sortDir: sortDir.value
+    }
+
+    if (searchQuery.value) {
+      params.q = searchQuery.value
+    }
+
+    if (statusFilter.value) {
+      params.status = statusFilter.value
+    }
+
+    if (priorityFilter.value) {
+      params.priority = priorityFilter.value
+    }
+
+    const response = await fetchTasks(params)
     tasks.value = response.data
+    meta.value = response.meta
   } catch (e: any) {
     error.value = e.data?.message || 'Failed to load tasks'
   } finally {
@@ -92,6 +127,33 @@ const cancelDelete = () => {
   taskToDelete.value = null
 }
 
+// Search/Filter/Sort handlers
+const handleSearch = (query: string) => {
+  searchQuery.value = query
+  currentPage.value = 1 // Reset to first page on search
+  loadTasks()
+}
+
+const handleFilter = () => {
+  currentPage.value = 1 // Reset to first page on filter
+  loadTasks()
+}
+
+const handleSort = () => {
+  loadTasks()
+}
+
+const handlePageChange = (page: number) => {
+  currentPage.value = page
+  loadTasks()
+}
+
+const handlePageSizeChange = (newPageSize: number) => {
+  pageSize.value = newPageSize
+  currentPage.value = 1 // Reset to first page on page size change
+  loadTasks()
+}
+
 // Load tasks on mount
 onMounted(() => {
   loadTasks()
@@ -109,6 +171,30 @@ onMounted(() => {
     </div>
 
     <TaskForm @submit="handleCreateTask" />
+
+    <!-- Search, Filter, and Sort Controls -->
+    <div class="bg-white rounded-lg shadow p-6 space-y-4">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">Find Tasks</h3>
+      
+      <TaskSearchBar
+        v-model="searchQuery"
+        @search="handleSearch"
+      />
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <TaskFilters
+          v-model:status="statusFilter"
+          v-model:priority="priorityFilter"
+          @filter="handleFilter"
+        />
+
+        <TaskSort
+          v-model:sort-by="sortBy"
+          v-model:sort-dir="sortDir"
+          @sort="handleSort"
+        />
+      </div>
+    </div>
     
     <TaskList 
       :tasks="tasks" 
@@ -116,6 +202,14 @@ onMounted(() => {
       @status-change="handleStatusChange"
       @edit="handleEditTask"
       @delete="handleDeleteRequest"
+    />
+
+    <!-- Pagination -->
+    <PaginationControls
+      v-if="meta.total > 0"
+      :meta="meta"
+      @page-change="handlePageChange"
+      @page-size-change="handlePageSizeChange"
     />
 
     <!-- Edit Dialog -->
@@ -148,9 +242,7 @@ onMounted(() => {
           <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
             <div class="sm:flex sm:items-start">
               <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                </svg>
+                <span class="text-2xl text-red-600">!</span>
               </div>
               <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                 <h3 id="delete-modal-title" class="text-base font-semibold leading-6 text-gray-900">
