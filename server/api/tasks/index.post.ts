@@ -1,19 +1,19 @@
-import { createTask } from '~~/server/domain/task/task.repository'
-import { createTaskSchema } from '#shared/schemas/task.schema'
-import { handleError } from '~~/server/utils/httpErrors'
-import { TaskCreate } from '~~/shared/types/task.type'
+import { createTask } from '~~/server/domain/task/task.repository';
+import { createTaskSchema } from '#shared/schemas/task.schema';
+import { handleError } from '~~/server/utils/httpErrors';
+import { TaskCreate } from '~~/shared/types/task.type';
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async event => {
   try {
-    const body = await readBody<TaskCreate>(event)
+    const body = await readBody<TaskCreate>(event);
 
-    const data: TaskCreate = createTaskSchema.parse(body)
+    const data: TaskCreate = createTaskSchema.parse(body);
 
-    const task: TaskCreate = await createTask(data)
+    const task: TaskCreate = await createTask(data);
 
-    setResponseStatus(event, 201)
-    return task
+    setResponseStatus(event, 201);
+    return task;
   } catch (error) {
-    throw handleError(error)
+    throw handleError(error);
   }
-})
+});

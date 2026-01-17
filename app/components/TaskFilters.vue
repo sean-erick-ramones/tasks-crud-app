@@ -1,32 +1,35 @@
 <script setup lang="ts">
-import type { TaskStatus, TaskPriority } from '#shared/types/task.type'
+import type { TaskStatus, TaskPriority } from '#shared/types/task.type';
 
-const statusFilter = defineModel<TaskStatus | undefined>('status')
-const priorityFilter = defineModel<TaskPriority | undefined>('priority')
+const statusFilter = defineModel<TaskStatus | undefined>('status');
+const priorityFilter = defineModel<TaskPriority | undefined>('priority');
 
 const emit = defineEmits<{
-  filter: []
-}>()
+  filter: [];
+}>();
 
 const handleFilterChange = () => {
-  emit('filter')
-}
+  emit('filter');
+};
 
 const clearFilters = () => {
-  statusFilter.value = undefined
-  priorityFilter.value = undefined
-  emit('filter')
-}
+  statusFilter.value = undefined;
+  priorityFilter.value = undefined;
+  emit('filter');
+};
 
 const hasActiveFilters = computed(() => {
-  return statusFilter.value !== undefined || priorityFilter.value !== undefined
-})
+  return statusFilter.value !== undefined || priorityFilter.value !== undefined;
+});
 </script>
 
 <template>
   <div class="flex flex-wrap items-center gap-4">
     <div class="flex-1 min-w-[200px]">
-      <label for="status-filter" class="block text-sm font-medium text-gray-700 mb-1">
+      <label
+        for="status-filter"
+        class="block text-sm font-medium text-gray-700 mb-1"
+      >
         Status
       </label>
       <select
@@ -43,7 +46,10 @@ const hasActiveFilters = computed(() => {
     </div>
 
     <div class="flex-1 min-w-[200px]">
-      <label for="priority-filter" class="block text-sm font-medium text-gray-700 mb-1">
+      <label
+        for="priority-filter"
+        class="block text-sm font-medium text-gray-700 mb-1"
+      >
         Priority
       </label>
       <select
@@ -59,7 +65,10 @@ const hasActiveFilters = computed(() => {
       </select>
     </div>
 
-    <div v-if="hasActiveFilters" class="flex items-end">
+    <div
+      v-if="hasActiveFilters"
+      class="flex items-end"
+    >
       <button
         type="button"
         class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -71,5 +80,4 @@ const hasActiveFilters = computed(() => {
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

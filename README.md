@@ -117,4 +117,3 @@ data/             # SQLite database
 - Single-user, local-first application (no authentication)
 - Search uses LIKE queries (suitable for expected dataset size ~100 tasks)
 - Tasks with null due dates sort last when sorting by dueDate
-

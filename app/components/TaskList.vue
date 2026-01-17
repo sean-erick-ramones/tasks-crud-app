@@ -1,51 +1,51 @@
 <script setup lang="ts">
-import type { Task } from '#shared/types/task.type'
+import type { Task } from '#shared/types/task.type';
 
 defineProps<{
-  tasks: Task[]
-  loading?: boolean
-}>()
+  tasks: Task[];
+  loading?: boolean;
+}>();
 
 const emit = defineEmits<{
-  statusChange: [id: string, status: string]
-  edit: [task: Task]
-  delete: [id: string]
-}>()
+  statusChange: [id: string, status: string];
+  edit: [task: Task];
+  delete: [id: string];
+}>();
 
 const getStatusColor = (status: string) => {
   switch (status) {
     case 'completed':
-      return 'bg-green-100 text-green-800'
+      return 'bg-green-100 text-green-800';
     case 'in-progress':
-      return 'bg-blue-100 text-blue-800'
+      return 'bg-blue-100 text-blue-800';
     default:
-      return 'bg-gray-100 text-gray-800'
+      return 'bg-gray-100 text-gray-800';
   }
-}
+};
 
 const getPriorityColor = (priority: string) => {
   switch (priority) {
     case 'high':
-      return 'bg-red-100 text-red-800'
+      return 'bg-red-100 text-red-800';
     case 'medium':
-      return 'bg-yellow-100 text-yellow-800'
+      return 'bg-yellow-100 text-yellow-800';
     default:
-      return 'bg-green-100 text-green-800'
+      return 'bg-green-100 text-green-800';
   }
-}
+};
 
 const formatDate = (date: Date | null) => {
-  if (!date) return 'No due date'
-  return new Date(date).toLocaleDateString('en-US', { 
-    year: 'numeric', 
-    month: 'short', 
-    day: 'numeric' 
-  })
-}
+  if (!date) return 'No due date';
+  return new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+};
 
 const handleStatusChange = (taskId: string, newStatus: string) => {
-  emit('statusChange', taskId, newStatus)
-}
+  emit('statusChange', taskId, newStatus);
+};
 </script>
 
 <template>
@@ -54,15 +54,24 @@ const handleStatusChange = (taskId: string, newStatus: string) => {
       <h2 class="text-xl font-semibold text-gray-900">Tasks</h2>
     </div>
 
-    <div v-if="loading" class="p-8 text-center text-gray-500">
+    <div
+      v-if="loading"
+      class="p-8 text-center text-gray-500"
+    >
       Loading tasks...
     </div>
 
-    <div v-else-if="tasks.length === 0" class="p-8 text-center text-gray-500">
+    <div
+      v-else-if="tasks.length === 0"
+      class="p-8 text-center text-gray-500"
+    >
       No tasks found. Create your first task above!
     </div>
 
-    <div v-else class="divide-y divide-gray-200">
+    <div
+      v-else
+      class="divide-y divide-gray-200"
+    >
       <div
         v-for="task in tasks"
         :key="task.id"
@@ -73,7 +82,10 @@ const handleStatusChange = (taskId: string, newStatus: string) => {
             <h3 class="text-lg font-medium text-gray-900 truncate">
               {{ task.title }}
             </h3>
-            <p v-if="task.description" class="mt-1 text-sm text-gray-600">
+            <p
+              v-if="task.description"
+              class="mt-1 text-sm text-gray-600"
+            >
               {{ task.description }}
             </p>
             <div class="mt-2 flex flex-wrap gap-2">
@@ -90,7 +102,12 @@ const handleStatusChange = (taskId: string, newStatus: string) => {
           </div>
 
           <div class="ml-4 flex items-start gap-2">
-            <label :for="`status-${task.id}`" class="sr-only">Change status</label>
+            <label
+              :for="`status-${task.id}`"
+              class="sr-only"
+            >
+              Change status
+            </label>
             <select
               :id="`status-${task.id}`"
               :value="task.status"
@@ -122,5 +139,4 @@ const handleStatusChange = (taskId: string, newStatus: string) => {
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

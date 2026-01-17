@@ -1,11 +1,11 @@
-import Database from 'better-sqlite3'
-import { drizzle } from 'drizzle-orm/better-sqlite3'
-import { tasks } from './schema'
+import Database from 'better-sqlite3';
+import { drizzle } from 'drizzle-orm/better-sqlite3';
+import { tasks } from './schema';
 
-const sqlite = new Database('./data/tasks.sqlite')
-const db = drizzle(sqlite)
+const sqlite = new Database('./data/tasks.sqlite');
+const db = drizzle(sqlite);
 
-console.log('Seeding database...')
+console.log('Seeding database...');
 
 const sampleTasks = [
   {
@@ -16,7 +16,7 @@ const sampleTasks = [
     priority: 'high' as const,
     dueDate: new Date('2026-01-20'),
     createdAt: new Date('2026-01-10'),
-    updatedAt: new Date('2026-01-12')
+    updatedAt: new Date('2026-01-12'),
   },
   {
     id: crypto.randomUUID(),
@@ -26,7 +26,7 @@ const sampleTasks = [
     priority: 'medium' as const,
     dueDate: new Date('2026-01-15'),
     createdAt: new Date('2026-01-11'),
-    updatedAt: new Date('2026-01-11')
+    updatedAt: new Date('2026-01-11'),
   },
   {
     id: crypto.randomUUID(),
@@ -36,7 +36,7 @@ const sampleTasks = [
     priority: 'low' as const,
     dueDate: null,
     createdAt: new Date('2026-01-08'),
-    updatedAt: new Date('2026-01-09')
+    updatedAt: new Date('2026-01-09'),
   },
   {
     id: crypto.randomUUID(),
@@ -46,7 +46,7 @@ const sampleTasks = [
     priority: 'high' as const,
     dueDate: new Date('2026-01-14'),
     createdAt: new Date('2026-01-12'),
-    updatedAt: new Date('2026-01-13')
+    updatedAt: new Date('2026-01-13'),
   },
   {
     id: crypto.randomUUID(),
@@ -56,12 +56,12 @@ const sampleTasks = [
     priority: 'medium' as const,
     dueDate: new Date('2026-01-16'),
     createdAt: new Date('2026-01-13'),
-    updatedAt: new Date('2026-01-13')
-  }
-]
+    updatedAt: new Date('2026-01-13'),
+  },
+];
 
-db.insert(tasks).values(sampleTasks).run()
+db.insert(tasks).values(sampleTasks).run();
 
-console.log(`Seeded ${sampleTasks.length} tasks successfully!`)
+console.log(`Seeded ${sampleTasks.length} tasks successfully!`);
 
-sqlite.close()
+sqlite.close();

@@ -1,51 +1,40 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "msedge",
-            "request": "launch",
-            "name": "client: msedge",
-            "url": "http://localhost:3000",
-            // this should point to your Nuxt `srcDir`, which is `app` by default
-            "webRoot": "${workspaceFolder}/app"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "server: nuxt",
-            "runtimeExecutable": "npm",
-            "runtimeArgs": [
-                "run",
-                "dev"
-            ],
-            "console": "integratedTerminal",
-            "outputCapture": "std",
-            "serverReadyAction": {
-                "pattern": "Local:.+(https?://.+)",
-                "uriFormat": "%s",
-                "action": "debugWithChrome"
-            },
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "resolveSourceMapLocations": [
-                "${workspaceFolder}/**",
-                "!**/node_modules/**"
-            ],
-            "env": {
-                "NODE_OPTIONS": "--enable-source-maps"
-            }
-        }
-    ],
-    "compounds": [
-        {
-            "name": "fullstack: nuxt",
-            "configurations": [
-                "server: nuxt",
-                "client: msedge"
-            ]
-        }
-    ]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "msedge",
+      "request": "launch",
+      "name": "client: msedge",
+      "url": "http://localhost:3000",
+      // this should point to your Nuxt `srcDir`, which is `app` by default
+      "webRoot": "${workspaceFolder}/app"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "server: nuxt",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "console": "integratedTerminal",
+      "outputCapture": "std",
+      "serverReadyAction": {
+        "pattern": "Local:.+(https?://.+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome"
+      },
+      "skipFiles": ["<node_internals>/**"],
+      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"],
+      "env": {
+        "NODE_OPTIONS": "--enable-source-maps"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "fullstack: nuxt",
+      "configurations": ["server: nuxt", "client: msedge"]
+    }
+  ]
 }

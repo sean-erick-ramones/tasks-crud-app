@@ -1,26 +1,22 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import { fileURLToPath } from 'url'
+import { fileURLToPath } from 'url';
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  modules: [
-    '@nuxt/test-utils/module',
-    '@nuxt/eslint',
-    '@nuxtjs/tailwindcss',
-  ],
+  modules: ['@nuxt/test-utils/module', '@nuxt/eslint', '@nuxtjs/tailwindcss'],
 
   typescript: {
     tsConfig: {
       compilerOptions: {
         paths: {
-          '#shared/*': ['./shared/*']
-        }
-      }
-    }
+          '#shared/*': ['./shared/*'],
+        },
+      },
+    },
   },
 
   alias: {
-    '#shared': fileURLToPath(new URL('./shared', import.meta.url))
-  }
-})
+    '#shared': fileURLToPath(new URL('./shared', import.meta.url)),
+  },
+});

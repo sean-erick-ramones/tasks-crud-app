@@ -1,40 +1,40 @@
-import type { Task, TaskCreate, TaskUpdate, TaskListResponse } from '#shared/types/task.type'
+import type { Task, TaskCreate, TaskUpdate, TaskListResponse } from '#shared/types/task.type';
 
 export const useTasksApi = () => {
   const fetchTasks = async (params?: Record<string, any>): Promise<TaskListResponse> => {
-    return await $fetch('/api/tasks', { params })
-  }
+    return await $fetch('/api/tasks', { params });
+  };
 
   const fetchTask = async (id: string): Promise<Task> => {
-    return await $fetch(`/api/tasks/${id}`)
-  }
+    return await $fetch(`/api/tasks/${id}`);
+  };
 
   const createTask = async (data: TaskCreate): Promise<Task> => {
     return await $fetch('/api/tasks', {
       method: 'POST',
-      body: data
-    })
-  }
+      body: data,
+    });
+  };
 
   const updateTask = async (id: string, data: TaskUpdate): Promise<Task> => {
     return await $fetch(`/api/tasks/${id}`, {
       method: 'PUT',
-      body: data
-    })
-  }
+      body: data,
+    });
+  };
 
   const updateTaskStatus = async (id: string, status: string): Promise<Task> => {
     return await $fetch(`/api/tasks/${id}`, {
       method: 'PATCH',
-      body: { status }
-    })
-  }
+      body: { status },
+    });
+  };
 
   const deleteTask = async (id: string): Promise<void> => {
     return await $fetch(`/api/tasks/${id}`, {
-      method: 'DELETE'
-    })
-  }
+      method: 'DELETE',
+    });
+  };
 
   return {
     fetchTasks,
@@ -42,6 +42,6 @@ export const useTasksApi = () => {
     createTask,
     updateTask,
     updateTaskStatus,
-    deleteTask
-  }
-}
+    deleteTask,
+  };
+};
