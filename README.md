@@ -282,7 +282,6 @@ data/             # SQLite database
 - **No task relationships** - No subtasks, dependencies, or task hierarchies
 
 ### UI/UX
-- **No confirmation dialogs** - Delete actions are immediate (could add in future)
 - **Basic error feedback** - Simple error messages without detailed recovery guidance
 - **No optimistic updates** - UI waits for server responses before updating state
 - **Text-based icons** - Using Unicode characters (×, ↑, ↓, ‹, ›, !) instead of icon library
