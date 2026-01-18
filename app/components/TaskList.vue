@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import type { AsyncDataRequestStatus } from '#app';
 import type { Task, TaskStatus } from '#shared/types/task.type';
 
 defineProps<{
   tasks: Task[];
-  loading?: boolean;
+  requestStatus: AsyncDataRequestStatus;
 }>();
 
 const emit = defineEmits<{
@@ -55,14 +56,21 @@ const handleStatusChange = (taskId: string, newStatus: TaskStatus) => {
     </div>
 
     <div
-      v-if="loading"
+      v-if="requestStatus === 'pending'"
       class="p-8 text-center text-gray-500"
     >
       Loading tasks...
     </div>
 
     <div
-      v-else-if="tasks.length === 0"
+      v-else-if="requestStatus === 'error'"
+      class="p-8 text-center text-red-500"
+    >
+      Failed to load tasks.
+    </div>
+
+    <div
+      v-else-if="tasks.length === 0 && requestStatus === 'success'"
       class="p-8 text-center text-gray-500"
     >
       No tasks found. Create your first task above!

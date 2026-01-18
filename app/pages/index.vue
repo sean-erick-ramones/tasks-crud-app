@@ -1,26 +1,30 @@
 <script setup lang="ts">
-import type {
-  TaskCreate,
-  TaskUpdate,
-  Task,
-  TaskStatus,
-  TaskPriority,
-  SortBy,
-  SortDir,
-  ListQuery,
-} from '#shared/types/task.type';
+import type { TaskCreate, TaskUpdate, Task, TaskStatus } from '#shared/types/task.type';
 import ToastHost from '~/components/ToastHost.vue';
 
-const { fetchTasks, createTask, updateTask, updateTaskStatus, deleteTask } = useTasksApi();
+// Get API methods
+const { createTask, updateTask, updateTaskStatus, deleteTask } = useTasksApi();
 
-const tasks = ref<Task[]>([]);
-const meta = ref({
-  page: 1,
-  pageSize: 10,
-  total: 0,
-  totalPages: 0,
-});
-const loading = ref(false);
+// Get state management
+const {
+  tasks,
+  meta,
+  status,
+  refresh,
+  execute,
+  searchQuery,
+  statusFilter,
+  priorityFilter,
+  sortBy,
+  sortDir,
+  handleSearch,
+  handleFilter,
+  handleSort,
+  handlePageChange,
+  handlePageSizeChange,
+} = useTasks();
+console.log('status in index.vue:', status);
+// Component-specific state
 const editingTask = ref<Task | null>(null);
 const isEditDialogOpen = ref(false);
 const taskToDelete = ref<string | null>(null);
@@ -28,53 +32,11 @@ const taskToDelete = ref<string | null>(null);
 // Toast notifications
 const toastHost = ref<InstanceType<typeof ToastHost> | null>(null);
 
-// Query parameters
-const searchQuery = ref('');
-const statusFilter = ref<TaskStatus | undefined>(undefined);
-const priorityFilter = ref<TaskPriority | undefined>(undefined);
-const sortBy = ref<SortBy>('createdAt');
-const sortDir = ref<SortDir>('desc');
-const currentPage = ref(1);
-const pageSize = ref(10);
-
-const loadTasks = async () => {
-  loading.value = true;
-  try {
-    const params: Partial<ListQuery> = {
-      page: currentPage.value,
-      pageSize: pageSize.value,
-      sortBy: sortBy.value,
-      sortDir: sortDir.value,
-    };
-
-    if (searchQuery.value) {
-      params.q = searchQuery.value;
-    }
-
-    if (statusFilter.value) {
-      params.status = statusFilter.value;
-    }
-
-    if (priorityFilter.value) {
-      params.priority = priorityFilter.value;
-    }
-
-    const response = await fetchTasks(params);
-    tasks.value = response.data;
-    meta.value = response.meta;
-  } catch (e: unknown) {
-    const error = e as { data?: { message?: string } };
-    toastHost.value?.addToast(error.data?.message || 'Failed to update task status', 'error');
-  } finally {
-    loading.value = false;
-  }
-};
-
 const handleCreateTask = async (taskData: TaskCreate) => {
   try {
     await createTask(taskData);
     toastHost.value?.addToast('Task created successfully!', 'success');
-    await loadTasks();
+    await refresh();
   } catch (e: unknown) {
     const error = e as { data?: { message?: string } };
     toastHost.value?.addToast(error.data?.message || 'Failed to create task', 'error');
@@ -85,7 +47,7 @@ const handleStatusChange = async (id: string, status: TaskStatus) => {
   try {
     await updateTaskStatus(id, status);
     toastHost.value?.addToast('Status updated successfully!', 'success');
-    await loadTasks();
+    await refresh();
   } catch (e: unknown) {
     const error = e as { data?: { message?: string } };
     toastHost.value?.addToast(error.data?.message || 'Failed to update task status', 'error');
@@ -103,7 +65,7 @@ const handleUpdateTask = async (id: string, taskData: TaskUpdate) => {
     toastHost.value?.addToast('Task updated successfully!', 'success');
     isEditDialogOpen.value = false;
     editingTask.value = null;
-    await loadTasks();
+    await refresh();
   } catch (e: unknown) {
     if (!toastHost.value) return;
     const error = e as { data?: { message?: string } };
@@ -122,7 +84,7 @@ const confirmDelete = async () => {
     await deleteTask(taskToDelete.value);
     toastHost.value?.addToast('Task deleted successfully!', 'success');
     taskToDelete.value = null;
-    await loadTasks();
+    await refresh();
   } catch (e: unknown) {
     const error = e as { data?: { message?: string } };
     toastHost.value?.addToast(error.data?.message || 'Failed to delete task', 'error');
@@ -134,36 +96,9 @@ const cancelDelete = () => {
   taskToDelete.value = null;
 };
 
-// Search/Filter/Sort handlers
-const handleSearch = (query: string) => {
-  searchQuery.value = query;
-  currentPage.value = 1; // Reset to first page on search
-  loadTasks();
-};
-
-const handleFilter = () => {
-  currentPage.value = 1; // Reset to first page on filter
-  loadTasks();
-};
-
-const handleSort = () => {
-  loadTasks();
-};
-
-const handlePageChange = (page: number) => {
-  currentPage.value = page;
-  loadTasks();
-};
-
-const handlePageSizeChange = (newPageSize: number) => {
-  pageSize.value = newPageSize;
-  currentPage.value = 1; // Reset to first page on page size change
-  loadTasks();
-};
-
-// Load tasks on mount
 onMounted(() => {
-  loadTasks();
+  // Initial load of tasks
+  execute();
 });
 </script>
 
@@ -200,7 +135,7 @@ onMounted(() => {
 
     <TaskList
       :tasks="tasks"
-      :loading="loading"
+      :request-status="status"
       @status-change="handleStatusChange"
       @edit="handleEditTask"
       @delete="handleDeleteRequest"

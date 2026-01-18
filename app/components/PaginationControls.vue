@@ -1,13 +1,6 @@
 <script setup lang="ts">
-interface PaginationMeta {
-  page: number;
-  pageSize: number;
-  total: number;
-  totalPages: number;
-}
-
 const props = defineProps<{
-  meta: PaginationMeta;
+  meta: TaskListMeta;
 }>();
 
 const emit = defineEmits<{
